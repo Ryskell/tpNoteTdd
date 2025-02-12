@@ -1,5 +1,6 @@
 import { generateBoard } from "./nQueen"; 
 import { canPlace } from "./nQueen";
+import { placeQueens } from "./nQueen";
 
 function printBoard(board: string[][]) {
     return board.map(row => row.join(" ")).join("\n");
@@ -84,5 +85,37 @@ describe("canPlace", () => {
         const board = generateBoard(4);
         board[2][2] = "#";
         expect(canPlace(board, 1, 1)).toBe(false);
+    });
+});
+
+describe("placeQueens", () => {
+    it("doit placer les reines correctement sur un plateau 4x4", () => {
+        const board = generateBoard(4);
+        const result = placeQueens(board);
+
+        console.log("\n Plateau final après placement pour N=4:");
+        console.table(board);
+
+        // Vérifie que la fonction a bien trouvé une solution
+        expect(result).toBe(true);
+
+        // Vérifie qu'il y a exactement 4 reines placées
+        const queenCount = board.reduce((count, row) => count + row.filter(cell => cell === "#").length, 0);
+        expect(queenCount).toBe(4);
+
+        // Vérifie qu'aucune reine ne peut en attaquer une autre
+        let isValid = true;
+        for (let row = 0; row < 4; row++) {
+            for (let col = 0; col < 4; col++) {
+                if (board[row][col] === "#") {
+                    board[row][col] = "0"; // Retirer temporairement pour vérifier
+                    if (!canPlace(board, row, col)) {
+                        isValid = false;
+                    }
+                    board[row][col] = "#"; // Remettre la reine
+                }
+            }
+        }
+        expect(isValid).toBe(true);
     });
 });
