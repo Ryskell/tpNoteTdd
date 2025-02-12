@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@jest/types':
+        specifier: ^29.6.3
+        version: 29.6.3
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
