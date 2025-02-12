@@ -70,9 +70,29 @@ export function placeQueens(board: string[][], row: number = 0): boolean {
 }
 
 
+export function solveNQueens(n: number): string[][][] {
+    const solutions: string[][][] = []; // Stocke toutes les solutions
+    const board: string[][] = generateBoard(n); // Génère un plateau vide
 
-export function solveNQueens(n: number): string[][] {
-    const board = generateBoard(n);
-    placeQueens(board);
-    return board;
+    function placeQueens(row: number): void {
+        if (row >= n) {
+            // Ajouter une copie du plateau à la liste des solutions
+            solutions.push(board.map(row => [...row]));
+            return;
+        }
+
+        for (let col = 0; col < n; col++) {
+            if (canPlace(board, row, col)) {
+                board[row][col] = "#"; // Placer une reine
+
+                placeQueens(row + 1); // Essayer de placer la suivante
+
+                board[row][col] = "0"; // Backtracking : retirer la reine
+            }
+        }
+    }
+
+    placeQueens(0);
+    return solutions;
 }
+

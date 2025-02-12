@@ -1,6 +1,7 @@
 import { generateBoard } from "./nQueen"; 
 import { canPlace } from "./nQueen";
 import { placeQueens } from "./nQueen";
+import { solveNQueens } from "./nQueen";
 
 function printBoard(board: string[][]) {
     return board.map(row => row.join(" ")).join("\n");
@@ -94,7 +95,7 @@ describe("placeQueens", () => {
         const result = placeQueens(board);
 
         console.log("\n Plateau final après placement pour N=4:");
-        console.table(board);
+        console.log(board);
 
         // Vérifie que la fonction a bien trouvé une solution
         expect(result).toBe(true);
@@ -117,5 +118,46 @@ describe("placeQueens", () => {
             }
         }
         expect(isValid).toBe(true);
+    });
+});
+
+ 
+
+describe("solveNQueens", () => {
+    it("doit trouver toutes les solutions pour N=4", () => {
+        const solutions = solveNQueens(4);
+        
+        console.log(`\n Nombre de solutions trouvées pour N=4: ${solutions.length}`);
+        solutions.forEach((solution, index) => {
+            console.log(`\nSolution ${index + 1}:`);
+            console.log(solution);
+        });
+
+        // Vérifie que le nombre de solutions est bien 2 
+        expect(solutions.length).toBe(2);
+
+        // Vérifie que chaque plateau contient exactement 4 reines
+        solutions.forEach(board => {
+            const queenCount = board.reduce((count, row) => count + row.filter(cell => cell === "#").length, 0);
+            expect(queenCount).toBe(4);
+        });
+
+        // Vérifie que chaque solution est valide (aucune reine attaquée)
+        let allValid = true;
+        solutions.forEach(board => {
+            for (let row = 0; row < 4; row++) {
+                for (let col = 0; col < 4; col++) {
+                    if (board[row][col] === "#") {
+                        board[row][col] = "0"; // Retirer temporairement
+                        if (!canPlace(board, row, col)) {
+                            allValid = false;
+                        }
+                        board[row][col] = "#"; // Remettre la reine
+                    }
+                }
+            }
+        });
+
+        expect(allValid).toBe(true);
     });
 });
